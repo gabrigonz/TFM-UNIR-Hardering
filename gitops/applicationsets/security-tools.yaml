@@ -8,7 +8,7 @@ spec:
     - list:
         elements:
           - cluster: https://kubernetes.default.svc
-            namespace: security-audit  
+            namespace: security-audit
   template:
     metadata:
       name: security-tools-prod
@@ -16,8 +16,8 @@ spec:
       project: default
       source:
         repoURL: https://github.com/gabrigonz/TFM-UNIR-Hardering.git
-        targetRevision: main  
-        path: gitops/apps/security-tools  
+        targetRevision: main
+        path: gitops/apps/security-tools
       destination:
         server: '{{.cluster}}'
         namespace: '{{.namespace}}'
@@ -26,4 +26,4 @@ spec:
           prune: true
           selfHeal: true
         syncOptions:
-          - CreateNamespace=true  
+          - CreateNamespace=true
