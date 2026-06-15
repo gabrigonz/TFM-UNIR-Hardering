@@ -1,0 +1,32 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: kubescape
+  namespace: security-audit
+spec:
+  schedule: "0 0 * * *"  
+  concurrencyPolicy: Forbid  
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: kubescape
+        spec:
+          containers:
+          - name: kubescape
+            image: kubescape/kubescape:v3.0.4  
+            command: 
+            - "kubescape"
+            - "scan"
+            - "framework"
+            - "nsa"  
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true  
+              runAsNonRoot: true            
+              runAsUser: 10001              
+              capabilities:
+                drop:
+                  - ALL
+          restartPolicy: OnFailure

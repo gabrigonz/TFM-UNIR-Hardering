@@ -1,0 +1,29 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: security-tools
+  namespace: argocd
+spec:
+  generators:
+    - list:
+        elements:
+          - cluster: https://kubernetes.default.svc
+            namespace: security-audit  
+  template:
+    metadata:
+      name: security-tools-prod
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/gabrigonz/TFM-UNIR-Hardering.git
+        targetRevision: main  
+        path: gitops/apps/security-tools  
+      destination:
+        server: '{{.cluster}}'
+        namespace: '{{.namespace}}'
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true  
