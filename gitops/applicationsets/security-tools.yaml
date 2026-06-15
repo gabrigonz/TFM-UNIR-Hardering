@@ -19,8 +19,8 @@ spec:
         targetRevision: main
         path: gitops/apps/security-tools
       destination:
-        server: '{{.cluster}}'
-        namespace: '{{.namespace}}'
+        server: https://kubernetes.default.svc
+        namespace: security-audit
       syncPolicy:
         automated:
           prune: true
