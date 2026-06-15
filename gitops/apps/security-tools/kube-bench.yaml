@@ -9,18 +9,19 @@ spec:
       labels:
         app: kube-bench
     spec:
-      hostPID: true  # Permite romper el aislamiento para inspeccionar procesos del host de AWS
+      hostPID: true
       containers:
       - name: kube-bench
-        image: aquasec/kube-bench:v0.6.15  
-        command: ["kube-bench", "--benchmark", "eks-1.0"]  
+        image: aquasec/kube-bench:v0.6.15
+        # Comando corregido para autodetectar los nodos de EKS modernos
+        command: ["kube-bench", "run", "--targets", "node"]
         securityContext:
-          allowPrivilegeEscalation: false  
-          readOnlyRootFilesystem: true     
-          runAsNonRoot: false              
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          runAsNonRoot: false
           capabilities:
             drop:
-              - ALL                       
+              - ALL
         volumeMounts:
         - name: var-lib-kubelet
           mountPath: /var/lib/kubelet
