@@ -15,9 +15,9 @@ spec:
         spec:
           containers:
           - name: kubescape
-            image: quay.io/kubescape/kubescape:latest
-            # Forzamos el comando directamente en el entrypoint para evitar que levante el servidor web
-            command: ["/usr/bin/kubescape"]
+            # Usamos la imagen CLI oficial que está diseñada justo para Jobs
+            image: quay.io/kubescape/kubescape-cli:latest
+            command: ["kubescape"]
             args: 
             - "scan"
             - "framework"
