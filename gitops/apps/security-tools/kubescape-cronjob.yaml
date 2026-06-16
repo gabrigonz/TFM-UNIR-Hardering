@@ -4,8 +4,8 @@ metadata:
   name: kubescape
   namespace: security-audit
 spec:
-  schedule: "0 0 * * *"  
-  concurrencyPolicy: Forbid  
+  schedule: "0 0 * * *"
+  concurrencyPolicy: Forbid
   jobTemplate:
     spec:
       template:
@@ -20,13 +20,24 @@ spec:
             - "kubescape"
             - "scan"
             - "framework"
-            - "nsa"  
+            - "nsa"
+            # Le decimos a Kubescape que use la carpeta temporal para sus datos
+            env:
+            - name: KUBESCAPE_HOME
+              value: /tmp/.kubescape
             securityContext:
               allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true  
-              runAsNonRoot: true            
-              runAsUser: 10001              
+              readOnlyRootFilesystem: true
+              runAsNonRoot: true
+              runAsUser: 10001
               capabilities:
                 drop:
                   - ALL
+            volumeMounts:
+            - name: cache-volume
+              mountPath: /tmp
           restartPolicy: OnFailure
+          # Creamos el volumen temporal en memoria RAM
+          volumes:
+          - name: cache-volume
+            emptyDir: {}
