@@ -16,18 +16,17 @@ spec:
           containers:
           - name: kubescape
             image: quay.io/kubescape/kubescape:latest
-            command: 
-            - "kubescape"
+            # Pasamos los parámetros como "args" en lugar de "command"
+            # Esto respeta el ejecutable interno de la imagen oficial
+            args: 
             - "scan"
             - "framework"
             - "nsa"
-            # Le decimos a Kubescape que use la carpeta temporal para sus datos
             env:
             - name: KUBESCAPE_HOME
               value: /tmp/.kubescape
             securityContext:
               allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
               runAsNonRoot: true
               runAsUser: 10001
               capabilities:
@@ -37,7 +36,6 @@ spec:
             - name: cache-volume
               mountPath: /tmp
           restartPolicy: OnFailure
-          # Creamos el volumen temporal en memoria RAM
           volumes:
           - name: cache-volume
             emptyDir: {}
