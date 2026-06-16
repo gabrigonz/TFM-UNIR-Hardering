@@ -16,8 +16,8 @@ spec:
           containers:
           - name: kubescape
             image: quay.io/kubescape/kubescape:latest
-            # Pasamos los parámetros como "args" en lugar de "command"
-            # Esto respeta el ejecutable interno de la imagen oficial
+            # Forzamos el comando directamente en el entrypoint para evitar que levante el servidor web
+            command: ["/usr/bin/kubescape"]
             args: 
             - "scan"
             - "framework"
