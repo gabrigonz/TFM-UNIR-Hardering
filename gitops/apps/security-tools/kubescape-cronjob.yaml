@@ -15,7 +15,7 @@ spec:
         spec:
           containers:
           - name: kubescape
-            image: kubescape/kubescape:v3.0.4  
+            image: quay.io/kubescape/kubescape:latest
             command: 
             - "kubescape"
             - "scan"
