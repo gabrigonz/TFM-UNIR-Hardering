@@ -2,18 +2,17 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: kyverno-infra
-  namespace: argocd 
+  namespace: argocd
 spec:
   project: default
   source:
     repoURL: 'https://kyverno.github.io/kyverno/'
-    chart: kyverno                                
-    targetRevision: 3.3.0                         
+    chart: kyverno
+    targetRevision: 3.3.0
   destination:
-    server: 'https://kubernetes.default.svc'      
-    namespace: kyverno-system                     
+    server: 'https://kubernetes.default.svc'
+    namespace: security-audit # 🔒 Lo forzamos aquí para que tu ApplicationSet lo acepte sin rechistar
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
-    createNamespace: true                        
