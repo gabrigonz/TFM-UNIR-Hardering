@@ -1,29 +1,18 @@
 apiVersion: argoproj.io/v1alpha1
-kind: ApplicationSet
+kind: Application
 metadata:
-  name: security-tools
+  name: kyverno-infra
   namespace: argocd
 spec:
-  generators:
-    - list:
-        elements:
-          - cluster: https://kubernetes.default.svc
-            namespace: security-audit
-  template:
-    metadata:
-      name: security-tools-prod
-    spec:
-      project: default
-      source:
-        repoURL: https://github.com/gabrigonz/TFM-UNIR-Hardering.git
-        targetRevision: main
-        path: gitops/apps/security-tools
-      destination:
-        server: https://kubernetes.default.svc
-        namespace: security-audit
-      syncPolicy:
-        automated:
-          prune: true
-          selfHeal: true
-        syncOptions:
-          - CreateNamespace=true
+  project: default
+  source:
+    repoURL: 'https://kyverno.github.io/kyverno/'
+    chart: kyverno
+    targetRevision: 3.3.0
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: security-audit
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
