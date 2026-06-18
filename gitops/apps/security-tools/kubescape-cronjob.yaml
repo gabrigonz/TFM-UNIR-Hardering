@@ -44,40 +44,62 @@ metadata:
   name: kubescape
   namespace: security-audit
 spec:
-  schedule: "0 0 * * *"
+  schedule: "0 */12 * * *"
   concurrencyPolicy: Forbid
+  startingDeadlineSeconds: 600
+  successfulJobsHistoryLimit: 2
+  failedJobsHistoryLimit: 1
   jobTemplate:
     spec:
+      backoffLimit: 1
+      activeDeadlineSeconds: 900
+      ttlSecondsAfterFinished: 86400
       template:
         metadata:
           labels:
             app: kubescape
         spec:
-          # Le asignamos la nueva identidad con permisos de lectura
           serviceAccountName: kubescape-sa
+          automountServiceAccountToken: true
+          restartPolicy: OnFailure
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 10001
+            runAsGroup: 10001
+            seccompProfile:
+              type: RuntimeDefault
           containers:
           - name: kubescape
-            image: quay.io/kubescape/kubescape-cli:latest
+            image: quay.io/kubescape/kubescape-cli:v4.0.5
+            imagePullPolicy: IfNotPresent
             command: ["kubescape"]
-            args: 
+            args:
             - "scan"
             - "framework"
             - "nsa"
-            - "-v"
+            - "--format"
+            - "json"
+            - "--output"
+            - "/tmp/results-nsa.json"
             env:
             - name: KUBESCAPE_HOME
               value: /tmp/.kubescape
             securityContext:
               allowPrivilegeEscalation: false
-              runAsNonRoot: true
-              runAsUser: 10001
+              readOnlyRootFilesystem: true
               capabilities:
                 drop:
-                  - ALL
+                - ALL
+            resources:
+              requests:
+                cpu: "100m"
+                memory: "128Mi"
+              limits:
+                cpu: "500m"
+                memory: "512Mi"
             volumeMounts:
             - name: cache-volume
               mountPath: /tmp
-          restartPolicy: OnFailure
           volumes:
           - name: cache-volume
             emptyDir: {}
